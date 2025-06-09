@@ -5,8 +5,8 @@ services:
       - ./:/var/www/
       - ./_docker/nginx/conf.d/:/etc/nginx/conf.d/
     ports:
-      - 8804:80
-    container_name: uploader
+      - 8807:80
+    container_name: authorization_and_registration
     depends_on:
       - app
   app:
@@ -17,7 +17,7 @@ services:
       - ./:/var/www
     depends_on:
       - db
-    container_name: uploader_app
+    container_name: authorization_and_registration_app
 
   db:
     image: mysql:latest
@@ -25,9 +25,9 @@ services:
     volumes:
       - ./tmp/db:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: uploader_docker
+      MYSQL_DATABASE: authorization_and_registration_docker
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - 8104:3306
+      - 8107:3306
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
-    container_name: uploader_db
+    container_name: authorization_and_registration_db
