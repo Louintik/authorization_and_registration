@@ -2,6 +2,8 @@
 
 require_once __DIR__.'/../helpers.php';
 
+$avatarPath = null; //потенциально создаем чтобы не возникло ошибок
+
 // Выносим данные из $_POST в отдельные переменные
 $name = $_POST['name'] ?? null; //если в передаваемом массиве нет name занесет в нашу переменную значение null
 $email = $_POST['email'] ?? null;
@@ -43,6 +45,10 @@ if (!empty($avatar)){
 }
 
 if (!empty($_SESSION['validation'])){
-	redirect('/register.php');
+//	redirect('/register.php');
+}
+
+if (!empty($avatar)){
+	$avatarPath = uploadFile($avatar, 'avatar');
 }
 

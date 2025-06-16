@@ -38,3 +38,21 @@ function old(string $key) { //возвращает старое значение
 	return $value;
 }
 
+function uploadFile(array $file, string $prefix = ''): string {
+
+	$uploadPath = __DIR__.'../uploads';
+
+	if(!is_dir($uploadPath)){
+		mkdir($uploadPath, 0777, true);
+	}
+
+	$ext = pathinfo($file['name'], PATHINFO_EXTENSION);//получим расширение файла
+	$fileName = $prefix . '_' . time() . ".$ext";
+
+	if(!move_uploaded_file($file['tmp_name'], "$uploadPath/$fileName")){
+		die('Ошибка во время загрузки файла');
+	}
+
+	return "uploads/$fileName";
+}
+
