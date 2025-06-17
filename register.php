@@ -1,15 +1,13 @@
 <?php
 require_once __DIR__.'/src/helpers.php';
-//$_SESSION['validation'] = [];
+checkGuest();
 ?>
 
 <!DOCTYPE html>
 <html lang="ru" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-    <link rel="stylesheet" href="assets/app.css">
-</head>
+<?php
+include_once __DIR__ . '/components/head.php';
+?>
 <body>
 
 <form class="card" action="src/actions/register.php" method="post" enctype="multipart/form-data">
@@ -23,10 +21,10 @@ require_once __DIR__.'/src/helpers.php';
                 name="name"
                 placeholder="Иванов Иван"
                 value="<?php echo old('name')?>"
-			<?php validationErrorAttr('name'); ?>
+			<?php echo validationErrorAttr('name'); ?>
         >
         <?php if(hasValidationError('name')): ?>
-        <small><?php validationErrorMessage('name');?></small>
+        <small><?php echo validationErrorMessage('name');?></small>
         <?php endif; ?>
     </label>
 
@@ -38,10 +36,10 @@ require_once __DIR__.'/src/helpers.php';
                 name="email"
                 placeholder="oooo@o.o"
                 value="<?php echo old('email')?>"
-	        <?php validationErrorAttr('email'); ?>
+	        <?php echo validationErrorAttr('email'); ?>
         >
 	    <?php if(hasValidationError('email')): ?>
-            <small><?php validationErrorMessage('email');?></small>
+            <small><?php echo validationErrorMessage('email');?></small>
 	    <?php endif; ?>
     </label>
 
@@ -50,10 +48,10 @@ require_once __DIR__.'/src/helpers.php';
                 type="file"
                 id="avatar"
                 name="avatar"
-	        <?php validationErrorAttr('avatar'); ?>
+	        <?php echo validationErrorAttr('avatar'); ?>
         >
 	    <?php if(hasValidationError('avatar')): ?>
-            <small><?php validationErrorMessage('avatar');?></small>
+            <small><?php echo validationErrorMessage('avatar');?></small>
 	    <?php endif; ?>
     </label>
 
@@ -65,10 +63,10 @@ require_once __DIR__.'/src/helpers.php';
                     id="password"
                     name="password"
                     placeholder="******"
-	            <?php validationErrorAttr('password'); ?>
+	            <?php echo validationErrorAttr('password'); ?>
             >
 	        <?php if(hasValidationError('password')): ?>
-                <small><?php validationErrorMessage('password');?></small>
+                <small><?php echo validationErrorMessage('password');?></small>
 	        <?php endif; ?>
         </label>
 
@@ -80,7 +78,6 @@ require_once __DIR__.'/src/helpers.php';
                     name="password_confirmation"
                     placeholder="******"
             >
-            <!--                required-->
         </label>
     </div>
 
@@ -103,8 +100,10 @@ require_once __DIR__.'/src/helpers.php';
     </button>
 </form>
 
-<p>У меня уже есть <a href="/index.php">аккаунт</a></p>
+<p>У меня уже есть <a href="/">аккаунт</a></p>
 
-<script src="assets/app.js"></script>
+<?php
+include_once __DIR__ . '/components/scripts.php';
+?>
 </body>
 </html>

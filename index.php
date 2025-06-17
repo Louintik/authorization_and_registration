@@ -1,13 +1,12 @@
 <?php
 require_once __DIR__.'/src/helpers.php';
+checkGuest();
 ?>
 <!DOCTYPE html>
 <html lang="ru" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-    <link rel="stylesheet" href="assets/app.css">
-</head>
+<?php
+include_once __DIR__ . '/components/head.php';
+?>
 <body>
 
 <form class="card" action="src/actions/login.php" method="post">
@@ -24,10 +23,10 @@ require_once __DIR__.'/src/helpers.php';
             name="email"
             placeholder="oooo@o.o"
             value="<?php echo old('email')?>"
-	        <?php validationErrorAttr('email'); ?>
+	        <?php echo validationErrorAttr('email'); ?>
         >
 	    <?php if(hasValidationError('email')): ?>
-            <small><?php validationErrorMessage('email');?></small>
+            <small><?php echo validationErrorMessage('email');?></small>
 	    <?php endif; ?>
     </label>
 
@@ -49,6 +48,8 @@ require_once __DIR__.'/src/helpers.php';
 
 <p>У меня еще нет <a href="/register.php">аккаунта</a></p>
 
-<script src="assets/app.js"></script>
+<?php
+include_once __DIR__ . '/components/scripts.php';
+?>
 </body>
 </html>

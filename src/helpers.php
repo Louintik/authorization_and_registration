@@ -1,9 +1,6 @@
 <?php
 session_start();
 
-//храним здесь набор удобных функций
-
-//нужно подключить конфигурационный файл чтобы ниже успешно инициализировать подключение к БД с помощью PDO
 require_once __DIR__ . '/config.php';
 function redirect(string $path) {
 	header("Location: $path");
@@ -14,27 +11,25 @@ function addValidationError(string $fieldName, string $message) {
 	$_SESSION['validation'][$fieldName] = $message;
 }
 
-function hasValidationError(string $fieldName): bool { //проверяем есть ли такое поле в массиве с ошибками (массив валидации формируется во время сессии)
+function hasValidationError(string $fieldName): bool {
 	return isset($_SESSION['validation'][$fieldName]);
 }
 
-function validationErrorAttr(string $fieldName) { //орисовывать либо не отрисовывать атрибут с ошибкой
-	echo isset($_SESSION['validation'][$fieldName]) ? 'aria-invalid="true"': '';
+function validationErrorAttr(string $fieldName):string {
+	return isset($_SESSION['validation'][$fieldName]) ? 'aria-invalid="true"': '';
 }
 
-function validationErrorMessage(string $fieldName) { //выводит текст ошибки
+function validationErrorMessage(string $fieldName) {
 	$message = $_SESSION['validation'][$fieldName] ?? '';
 	unset($_SESSION['validation'][$fieldName]);
-	echo $message;
-	// ?? оператор означает что если поле $fieldName существует то
-	// если не существует поля $fieldName то пустая строка
+	return $message;
 }
 
-function addOldValue(string $key, mixed $value) { //сохраняет старые данные формы
+function addOldValue(string $key, mixed $value) {
 	$_SESSION['old'][$key] = $value;
 }
 
-function old(string $key) { //возвращает старое значение по ключу c автоматическим очищением ключа
+function old(string $key) {
 	$value = $_SESSION['old'][$key] ?? '';
 	unset($_SESSION['old'][$key]);
 	return $value;
@@ -42,13 +37,13 @@ function old(string $key) { //возвращает старое значение
 
 function uploadFile(array $file, string $prefix = ''): string {
 
-	$uploadPath = __DIR__.'../uploads';
+	$uploadPath = __DIR__ . '/../uploads';
 
 	if(!is_dir($uploadPath)){
 		mkdir($uploadPath, 0777, true);
 	}
 
-	$ext = pathinfo($file['name'], PATHINFO_EXTENSION);//получим расширение файла
+	$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
 	$fileName = $prefix . '_' . time() . ".$ext";
 
 	if(!move_uploaded_file($file['tmp_name'], "$uploadPath/$fileName")){
@@ -59,10 +54,10 @@ function uploadFile(array $file, string $prefix = ''): string {
 }
 
 function setMessage(string $key, string $message) {
-	$_SESSION['message'][$key] = $message; //добавление сообщения в сессию под ключами ['message'][$key]
+	$_SESSION['message'][$key] = $message;
 }
 
-function hasMessage(string $key) { //проверяет есть ли какое-то сообщение сейчас в сессии
+function hasMessage(string $key) {
 	return isset($_SESSION['message'][$key]);
 }
 
@@ -72,7 +67,7 @@ function getMessage(string $key) {
 	return $message;
 }
 
-function getPDO(): PDO { //инициализируем подключение с помощью PDO
+function getPDO(): PDO {
 	try {
 		return new \PDO('mysql:host='.DB_HOST.';port=' . DB_PORT . ';charset=utf8;dbname=' . DB_NAME,DB_USERNAME, DB_PASSWORD);
 	} catch(\PDOException $exception) {
@@ -86,3 +81,32 @@ function findUser(string $email): array|bool {
 	$stmt->execute(['email' => $email]);
 	return $stmt->fetch( \PDO:: FETCH_ASSOC);
 }
+
+function currentUser(): array| false {
+	$pdo = getPDO();
+	if(!isset($_SESSION['user'])) {
+		return false;
+	}
+	$userId = $_SESSION['user']['id'] ?? null;
+	$stmt = $pdo->prepare(query: "SELECT * FROM users WHERE id = :id");
+	$stmt->execute(['id' => $userId]);
+	return $stmt->fetch(mode: \PDO:: FETCH_ASSOC);
+}
+
+function logout() {
+	unset($_SESSION['user']['id']);
+	redirect('/');
+}
+
+function checkAuth(): void {
+	if(!isset($_SESSION['user']['id'])){
+		redirect('/');
+	}
+}
+
+function checkGuest(): void {
+	if(isset($_SESSION['user']['id'])){
+		redirect('/home.php');
+	}
+}
+
