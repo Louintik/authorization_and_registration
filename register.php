@@ -7,7 +7,6 @@ require_once __DIR__.'/src/helpers.php';
 <html lang="ru" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <title>AreaWeb - авторизация и регистрация</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <link rel="stylesheet" href="assets/app.css">
 </head>
@@ -37,7 +36,7 @@ require_once __DIR__.'/src/helpers.php';
                 type="text"
                 id="email"
                 name="email"
-                placeholder="ivan@areaweb.su"
+                placeholder="oooo@o.o"
                 value="<?php echo old('email')?>"
 	        <?php validationErrorAttr('email'); ?>
         >

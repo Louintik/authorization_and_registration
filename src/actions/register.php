@@ -2,17 +2,13 @@
 
 require_once __DIR__.'/../helpers.php';
 
-$avatarPath = null; //потенциально создаем чтобы не возникло ошибок
+$avatarPath = null;
 
-// Выносим данные из $_POST в отдельные переменные
-$name = $_POST['name'] ?? null; //если в передаваемом массиве нет name занесет в нашу переменную значение null
+$name = $_POST['name'] ?? null;
 $email = $_POST['email'] ?? null;
 $password = $_POST['password'] ?? null;
 $passwordConfirmation = $_POST['password_confirmation'] ?? null;
 $avatar = $_FILES['avatar'] ?? null;
-
-addOldValue('name',$name);
-addOldValue('email',$email);
 
 // Валидация
 
@@ -45,7 +41,9 @@ if (!empty($avatar)){
 }
 
 if (!empty($_SESSION['validation'])){
-//	redirect('/register.php');
+	addOldValue('name',$name);
+	addOldValue('email',$email);
+	redirect('/register.php');
 }
 
 if (!empty($avatar)){
@@ -55,20 +53,20 @@ if (!empty($avatar)){
 $pdo = getPDO();
 
 $query = "INSERT INTO users (name,email,avatar,password) VALUES (:name,:email,:avatar,:password)";
-$params = [ //заносим значения напрямую так как ранее делали валидацию
+$params = [
 	'name' => $name,
 	'email' => $email,
 	'avatar' => $avatarPath,
-	'password' => password_hash($password, PASSWORD_DEFAULT) //вторым параметром передаем алгоритм шифрования
+	'password' => password_hash($password, PASSWORD_DEFAULT)
 ];
-$stmt = $pdo->prepare($query); //выполняем сам запрос
+$stmt = $pdo->prepare($query);
 
 try {
-	$stmt->execute($params); //производим добавление пользователя в базу
+	$stmt->execute($params);
 }
 catch(\Exception $exception) {
 	die($exception);
 }
 
-redirect('/index.php'); //после успешной регистрации редирект на страницу входа
+redirect('/index.php');
 

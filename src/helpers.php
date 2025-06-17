@@ -58,6 +58,19 @@ function uploadFile(array $file, string $prefix = ''): string {
 	return "uploads/$fileName";
 }
 
+function setMessage(string $key, string $message) {
+	$_SESSION['message'][$key] = $message; //добавление сообщения в сессию под ключами ['message'][$key]
+}
+
+function hasMessage(string $key) { //проверяет есть ли какое-то сообщение сейчас в сессии
+	return isset($_SESSION['message'][$key]);
+}
+
+function getMessage(string $key) {
+	$message = $_SESSION['message'][$key] ?? '';
+	unset($_SESSION['message'][$key]);
+	return $message;
+}
 
 function getPDO(): PDO { //инициализируем подключение с помощью PDO
 	try {
@@ -65,4 +78,11 @@ function getPDO(): PDO { //инициализируем подключение �
 	} catch(\PDOException $exception) {
 		die("Connection error: {$exception->getMessage()}");
 	}
+}
+
+function findUser(string $email): array|bool {
+	$pdo = getPDO();
+	$stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+	$stmt->execute(['email' => $email]);
+	return $stmt->fetch( \PDO:: FETCH_ASSOC);
 }
