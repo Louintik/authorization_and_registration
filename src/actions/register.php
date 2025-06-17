@@ -52,3 +52,23 @@ if (!empty($avatar)){
 	$avatarPath = uploadFile($avatar, 'avatar');
 }
 
+$pdo = getPDO();
+
+$query = "INSERT INTO users (name,email,avatar,password) VALUES (:name,:email,:avatar,:password)";
+$params = [ //заносим значения напрямую так как ранее делали валидацию
+	'name' => $name,
+	'email' => $email,
+	'avatar' => $avatarPath,
+	'password' => password_hash($password, PASSWORD_DEFAULT) //вторым параметром передаем алгоритм шифрования
+];
+$stmt = $pdo->prepare($query); //выполняем сам запрос
+
+try {
+	$stmt->execute($params); //производим добавление пользователя в базу
+}
+catch(\Exception $exception) {
+	die($exception);
+}
+
+redirect('/index.php'); //после успешной регистрации редирект на страницу входа
+

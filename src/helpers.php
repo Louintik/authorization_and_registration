@@ -3,6 +3,8 @@ session_start();
 
 //храним здесь набор удобных функций
 
+//нужно подключить конфигурационный файл чтобы ниже успешно инициализировать подключение к БД с помощью PDO
+require_once __DIR__ . '/config.php';
 function redirect(string $path) {
 	header("Location: $path");
 	die();
@@ -56,3 +58,11 @@ function uploadFile(array $file, string $prefix = ''): string {
 	return "uploads/$fileName";
 }
 
+
+function getPDO(): PDO { //инициализируем подключение с помощью PDO
+	try {
+		return new \PDO('mysql:host='.DB_HOST.';port=' . DB_PORT . ';charset=utf8;dbname=' . DB_NAME,DB_USERNAME, DB_PASSWORD);
+	} catch(\PDOException $exception) {
+		die("Connection error: {$exception->getMessage()}");
+	}
+}
